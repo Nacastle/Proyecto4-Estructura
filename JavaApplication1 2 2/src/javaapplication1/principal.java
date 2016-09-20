@@ -1,11 +1,13 @@
 package javaapplication1;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
@@ -25,8 +27,8 @@ public class principal {
     Graph graph = new MultiGraph("Grupos");
 
     principal() throws IOException {
-
-        muestraContenido("./hola.txt");
+        
+        muestraContenido();
         Scanner entrada = new Scanner(System.in);
         noPersonasPorGrupo = Integer.parseInt(JOptionPane.showInputDialog(null, "Introduzca el No de personas por grupo."));
         noDescansosLider = Integer.parseInt(JOptionPane.showInputDialog(null, "Introduzca el No de descansos para lideres"));
@@ -65,15 +67,21 @@ public class principal {
             hacerAmigos();
             if (elec == 0) {
                 cambiarSet();
-                asignacionLideres();
-                imprimirSet();
                 for (Node n : graph) {
                     n.addAttribute("label", n.getId());
                 }
                 graph.display(true);
+                asignacionLideres();
+                imprimirSet();
+                
                 contador++;
             }
             if (contador == numeroSetNecesarios) {
+                hacerAmigos();
+                for (Node n : graph) {
+                    n.addAttribute("label", n.getId());
+                }
+                graph.display(true);
                 JOptionPane.showMessageDialog(null, "Felicidades todos han sido lideres y todos se conocen");
                 //System.out.println("Felicidades todos son lideres y amigos");
                 elec = 2;
@@ -82,8 +90,27 @@ public class principal {
 
     }
 
-    public void muestraContenido(String archivo) throws FileNotFoundException, IOException {
+    public void muestraContenido(/*String archivo*/) throws FileNotFoundException, IOException {
         String cadena;
+        try {
+            JFileChooser file = new JFileChooser();
+            file.showOpenDialog(file);
+            
+            File abrir = file.getSelectedFile();
+            if (abrir != null) {
+                FileReader archivo = new FileReader(abrir);
+                try(BufferedReader read = new BufferedReader(archivo)) {
+                    while((cadena = read.readLine()) != null){
+                        lineas.add(new Linea(cadena));
+                    }
+                    read.close();
+                } catch (Exception e) {
+                }
+            }
+        } catch (Exception e) {
+        }
+        
+        /*String cadena;
         FileReader f = new FileReader(archivo);
         BufferedReader b = new BufferedReader(f);
         while ((cadena = b.readLine()) != null) {
@@ -91,6 +118,7 @@ public class principal {
             lineas.add(new Linea(cadena));
         }
         b.close();
+        */
     }
 
     public void llenarPrimerSet() {
