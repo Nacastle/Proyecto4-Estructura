@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import javax.swing.JOptionPane;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.MultiGraph;
@@ -27,10 +28,12 @@ public class principal {
 
         muestraContenido("./hola.txt");
         Scanner entrada = new Scanner(System.in);
-        System.out.println("Introdusca el No de personas por grupo:");
-        noPersonasPorGrupo = entrada.nextInt();
-        System.out.println("Introdusca el No de descansos para lideres:");
-        noDescansosLider = entrada.nextInt();
+        noPersonasPorGrupo = Integer.parseInt(JOptionPane.showInputDialog(null, "Introduzca el No de personas por grupo."));
+        noDescansosLider = Integer.parseInt(JOptionPane.showInputDialog(null, "Introduzca el No de descansos para lideres"));
+//        System.out.println("Introdusca el No de personas por grupo:");
+//        noPersonasPorGrupo = entrada.nextInt();
+//        System.out.println("Introdusca el No de descansos para lideres:");
+//        noDescansosLider = entrada.nextInt();
 
         for (int i = 0; i < lineas.size(); i++) {
             totalPersonas = totalPersonas + lineas.get(i).noPersonas;
@@ -56,8 +59,9 @@ public class principal {
         int contador = 0;
         int elec = 0;
         while (elec == 0) {
-            System.out.println("Presiona cero para ver otro set o cualquier otro numero para salir SIN TERMINAR");
-            elec = entrada.nextInt();
+            elec = Integer.parseInt(JOptionPane.showInputDialog("Presiona cero para ver otro set o cualquier otro numero para salir SIN TERMINAR"));
+            //System.out.println("Presiona cero para ver otro set o cualquier otro numero para salir SIN TERMINAR");
+            //elec = entrada.nextInt();
             hacerAmigos();
             if (elec == 0) {
                 cambiarSet();
@@ -70,7 +74,8 @@ public class principal {
                 contador++;
             }
             if (contador == numeroSetNecesarios) {
-                System.out.println("Felicidades todos son lideres y amigos");
+                JOptionPane.showMessageDialog(null, "Felicidades todos han sido lideres y todos se conocen");
+                //System.out.println("Felicidades todos son lideres y amigos");
                 elec = 2;
             }
         }
@@ -182,18 +187,11 @@ public class principal {
         Linea ref1;
         Linea ref2;
         for (int i = 0; i < set.size(); i++) {
-            for (int j = 0; j < set.get(i).integrantes.size(); j++) {
-                for (int k = 0; k < set.get(i).integrantes.size(); k++) {
-                    if (j != k) {
-                        if (!set.get(i).integrantes.get(j).amigos.contains(set.get(i).integrantes.get(k))) {
-                            set.get(i).integrantes.get(j).amigos.add(set.get(i).integrantes.get(k));
-                            ref1 = set.get(i).integrantes.get(j);
-                            ref2 = set.get(i).integrantes.get(k);
-                            if (graph.getEdge(set.get(i).lider.cadena + ref1.cadena + ref2.cadena) == null) {
-                                graph.addEdge(set.get(i).lider.cadena + ref1.cadena + ref2.cadena, ref1.cadena, ref2.cadena);
-                            }
-                        }
-                    }
+            for (int j = 1; j < set.get(i).integrantes.size(); j++) {
+                ref1 = set.get(i).integrantes.get(j);
+                ref2 = set.get(i).integrantes.get(0);
+                if (graph.getEdge(set.get(i).lider.cadena + ref1.cadena + ref2.cadena) == null) {
+                    graph.addEdge(set.get(i).lider.cadena + ref1.cadena + ref2.cadena, ref1.cadena, ref2.cadena, true);
                 }
             }
         }
